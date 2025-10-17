@@ -1,0 +1,51 @@
+{
+    "5769694293": {
+        "step": "waiting_subscription"
+    },
+    "7650252779": {
+        "step": "waiting_subscription"
+    },
+    "2067081697": {
+        "step": "waiting_subscription"
+    },
+    "7934683416": {
+        "step": "waiting_subscription"
+    },
+    "5935592031": {
+        "step": "waiting_subscription"
+    },
+    "7615419796": {
+        "step": "start"
+    },
+    "498222712": {
+        "step": "waiting_subscription"
+    },
+    "6456305862": {
+        "step": "waiting_subscription"
+    },
+    "7736396286": {
+        "step": "waiting_subscription"
+    },
+    "7363287134": {
+        "step": "waiting_subscription"
+    },
+    "6579079208": {
+        "step": "waiting_subscription"
+    },
+    "7155815284": {
+        "step": "waiting_subscription"
+    },
+    "8253229306": {
+        "step": "waiting_subscription"
+    },
+    "7056669686": {
+        "step": "waiting_subscription"
+    },
+    "7552736766": {
+        "step": "ready_signal",
+        "app": "1xBET"
+    },
+    "6039199889": {
+        "step": "waiting_continue"
+    }
+}

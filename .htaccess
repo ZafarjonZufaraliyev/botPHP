@@ -1,0 +1,19 @@
+# PHP versiyasini o‘rnatish (agar hosting qo‘llasa)
+AddHandler application/x-httpd-php74 .php
+
+# Foydalanuvchi holati fayli va videoni himoya qilish
+<Files "states.json">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Files "apple.mp4">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Xatoliklar va URL rewrites
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*$ index.php [L]
