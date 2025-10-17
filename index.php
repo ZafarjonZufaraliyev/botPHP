@@ -1,7 +1,7 @@
 <?php
 echo "✅ Bot ishga tushdi...\n";
 
-$token = "7989771120:AAEDQTJjmawBswoVrCqPa4jvnB4Di5QaONM";
+$token = "YOUR_BOT_TOKEN"; // 🔁 Bu yerga tokeningizni yozing
 $apiURL = "https://api.telegram.org/bot$token/";
 
 $REQUIRED_CHANNELS = [
@@ -41,10 +41,10 @@ function checkSubscription($userId) {
 function sendWelcomeMessage($chatId) {
     $msg = "🎉 <b>Xush kelibsiz!</b>\nHurmatli foydalanuvchi!\n\n".
         "🆘 <b>Eslatma</b> — bot to‘g‘ri ishlashi uchun:\n".
-        "1) 1xBET yoki Linebet ilovasidan ro‘yxatdan o‘ting.\n".
-        "2) Promokod joyiga <b>BEKA04</b> yozing.\n".
-        "3) Hisobni to‘ldiring.\n\n".
-        "<i>Davom etish uchun quyidagi tugmani bosing</i>";
+        "1️⃣ 1xBET yoki Linebet ilovasidan ro‘yxatdan o‘ting.\n".
+        "2️⃣ Promokod joyiga <b>BEKA04</b> yozing.\n".
+        "3️⃣ Hisobni to‘ldiring.\n\n".
+        "<i>Davom etish uchun quyidagi tugmani bosing 👇</i>";
 
     $keyboard = [
         "inline_keyboard" => [
@@ -66,7 +66,7 @@ function sendChannelRequest($chatId) {
     foreach ($REQUIRED_CHANNELS as $chan) {
         if (!empty($chan["url"])) $keyboard[] = [ ["text"=>$chan["displayName"], "url"=>$chan["url"]] ];
     }
-    $keyboard[] = [ ["text"=>"A'zo bo'ldim ✅", "callback_data"=>"azo_boldim"] ];
+    $keyboard[] = [ ["text"=>"✅ A'zo bo'ldim", "callback_data"=>"azo_boldim"] ];
     tgRequest("sendMessage", [
         "chat_id"=>$chatId,
         "text"=>"❗ Iltimos, quyidagi kanallarga obuna bo‘ling:",
@@ -105,10 +105,19 @@ function sendGuideVideo($chatId) {
 
 function sendSignalMessage($chatId) {
     $random = rand(1, 5);
+    $text = "✅ <b>Signal:</b> $random";
+
+    $keyboard = [
+        "inline_keyboard" => [
+            [ ["text" => "🔥 Yana signal olish", "callback_data" => "get_signal"] ]
+        ]
+    ];
+
     tgRequest("sendMessage", [
         "chat_id"=>$chatId,
-        "text"=>"✅ <b>Signal:</b> $random",
-        "parse_mode"=>"HTML"
+        "text"=>$text,
+        "parse_mode"=>"HTML",
+        "reply_markup"=>json_encode($keyboard)
     ]);
 }
 
@@ -120,7 +129,7 @@ while (true) {
         foreach ($updates["result"] as $update) {
             $offset = $update["update_id"];
             global $userStates;
-            
+
             if (isset($update["message"])) {
                 $chatId = $update["message"]["chat"]["id"];
                 $userId = $update["message"]["from"]["id"];
