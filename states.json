@@ -24,7 +24,8 @@
         "step": "waiting_subscription"
     },
     "7736396286": {
-        "step": "waiting_subscription"
+        "step": "ready_signal",
+        "app": "1xBET"
     },
     "7363287134": {
         "step": "waiting_subscription"

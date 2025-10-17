@@ -1,18 +1,22 @@
 <?php
 echo "✅ Bot ishga tushdi...\n";
 
-$token = "YOUR_BOT_TOKEN"; // 🔁 Bu yerga tokeningizni yozing
+// === Telegram sozlamalari ===
+$token = "7989771120:AAEDQTJjmawBswoVrCqPa4jvnB4Di5QaONM"; // 🔁 <-- bu yerga o'z tokeningizni yozing
 $apiURL = "https://api.telegram.org/bot$token/";
 
+// === Kanal majburiy obuna ro'yxati ===
 $REQUIRED_CHANNELS = [
     [ "username" => "@stathim_jason", "chatId" => null, "displayName" => "1-chi kanal", "url" => "https://t.me/stathim_jason" ],
     [ "username" => null, "chatId" => -1002894702391, "displayName" => "2-chi kanal", "url" => "https://t.me/+Rhj3QGVMOG45MzQy" ]
 ];
 
+// === Foydalanuvchi holatini saqlash uchun fayl ===
 $stateFile = __DIR__ . "/states.json";
 if (!file_exists($stateFile)) file_put_contents($stateFile, "{}");
 $userStates = json_decode(file_get_contents($stateFile), true);
 
+// === Foydali funksiya: so‘rov yuborish ===
 function tgRequest($method, $params = []) {
     global $apiURL;
     $ch = curl_init();
@@ -24,6 +28,7 @@ function tgRequest($method, $params = []) {
     return json_decode($res, true);
 }
 
+// === Kanalga a'zolikni tekshirish ===
 function checkSubscription($userId) {
     global $REQUIRED_CHANNELS, $token;
     foreach ($REQUIRED_CHANNELS as $chan) {
@@ -38,13 +43,14 @@ function checkSubscription($userId) {
     return true;
 }
 
+// === Boshlang‘ich xabar ===
 function sendWelcomeMessage($chatId) {
-    $msg = "🎉 <b>Xush kelibsiz!</b>\nHurmatli foydalanuvchi!\n\n".
-        "🆘 <b>Eslatma</b> — bot to‘g‘ri ishlashi uchun:\n".
-        "1️⃣ 1xBET yoki Linebet ilovasidan ro‘yxatdan o‘ting.\n".
-        "2️⃣ Promokod joyiga <b>BEKA04</b> yozing.\n".
-        "3️⃣ Hisobni to‘ldiring.\n\n".
-        "<i>Davom etish uchun quyidagi tugmani bosing 👇</i>";
+    $msg = "🎉 <b>Xush kelibsiz!</b>\n\n".
+           "🆘 <b>Eslatma:</b>\n".
+           "1️⃣ 1xBET yoki Linebet ilovasidan ro‘yxatdan o‘ting.\n".
+           "2️⃣ Promokod joyiga <b>BEKA04</b> yozing.\n".
+           "3️⃣ Hisobni to‘ldiring.\n\n".
+           "<i>Davom etish uchun quyidagi tugmani bosing 👇</i>";
 
     $keyboard = [
         "inline_keyboard" => [
@@ -60,6 +66,7 @@ function sendWelcomeMessage($chatId) {
     ]);
 }
 
+// === Kanalga obuna bo‘lishni so‘rash ===
 function sendChannelRequest($chatId) {
     global $REQUIRED_CHANNELS;
     $keyboard = [];
@@ -74,6 +81,7 @@ function sendChannelRequest($chatId) {
     ]);
 }
 
+// === Ilova tanlash (1xBet / Linebet) ===
 function sendAppSelection($chatId) {
     $keyboard = [
         "inline_keyboard" => [
@@ -88,6 +96,7 @@ function sendAppSelection($chatId) {
     ]);
 }
 
+// === Qo‘llanma video ===
 function sendGuideVideo($chatId) {
     $fileName = "apple.mp4";
     $filePath = __DIR__ . "/" . $fileName;
@@ -103,6 +112,7 @@ function sendGuideVideo($chatId) {
     ]);
 }
 
+// === Signal chiqarish ===
 function sendSignalMessage($chatId) {
     $random = rand(1, 5);
     $text = "✅ <b>Signal:</b> $random";
@@ -121,7 +131,7 @@ function sendSignalMessage($chatId) {
     ]);
 }
 
-// ---- Long polling orqali ishlov berish ----
+// === Long polling orqali xabarlarni qabul qilish ===
 $offset = 0;
 while (true) {
     $updates = tgRequest("getUpdates", ["offset" => $offset + 1, "timeout" => 10]);
@@ -130,6 +140,7 @@ while (true) {
             $offset = $update["update_id"];
             global $userStates;
 
+            // === Oddiy xabar ===
             if (isset($update["message"])) {
                 $chatId = $update["message"]["chat"]["id"];
                 $userId = $update["message"]["from"]["id"];
@@ -147,7 +158,7 @@ while (true) {
                     }
                 } 
                 elseif ($state === "waiting_beka04_id") {
-                    if (preg_match('/^[0-9]+$/', trim($text))) {
+                    if (preg_match('/^[0-9]{10}$/', trim($text))) {
                         $appName = $app ?: "1xBET";
                         $msg = "📲 {$appName} ID qabul qilindi!\n\n".
                                "⚠️ Agar <b>BEKA04</b> promokoddan o‘tmagan bo‘lsangiz, bot xato signal beradi!\n\n".
@@ -173,6 +184,7 @@ while (true) {
                 }
             }
 
+            // === Callback tugmalarni boshqarish ===
             if (isset($update["callback_query"])) {
                 $data   = $update["callback_query"]["data"];
                 $chatId = $update["callback_query"]["message"]["chat"]["id"];
@@ -204,6 +216,7 @@ while (true) {
                 }
             }
 
+            // === Foydalanuvchi holatini saqlash ===
             file_put_contents($GLOBALS['stateFile'], json_encode($GLOBALS['userStates'], JSON_PRETTY_PRINT));
         }
     }
